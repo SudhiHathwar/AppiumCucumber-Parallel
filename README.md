@@ -9,21 +9,25 @@ Run Appium tests parallel on iOS and Android using Cucumber-TestNG
 * For Appium setup and Mac, please refer
 
 ## Project Structure
-* Configuration package - Hooks and API Processor
+* Configuration package - Hooks, DeviceHelper, LocalDriverManager, ServiceManager
 * Runners - Cucumber Runner Test
-* Screens - Page Classes with Page Actions defined
+* Screens - Page Classes with Page Objects defined
 * Step Definitions - Screen and its Steps Defs.
-* Features - cucumber features
+* Utils - Reporting and Listeneres
+* Features - cucumber features files
+
 
 ## Dependencies
 * Appium Java Client
 * Cucumber JVM
 * Cucumber Java
-* Rest Assured - API processing
+* json.org
+* testng
+* Cucumber-extent report
 
 ## Test Execution
-$ `git clone https://github.com/SrinivasanTarget/AppiumCucumber.git `
+$ `git clone https://github.com/SudhiHathwar/AppiumCucumber-Parallel.git
 
-$ `mvn clean install`
+$ `mvn clean test`
 
 
