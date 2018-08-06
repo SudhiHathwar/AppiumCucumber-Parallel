@@ -6,7 +6,7 @@ Run Appium tests parallel on iOS and Android using Cucumber-TestNG
 * Java 8
 * Maven
 * Intellij IDE with Cucumber Plugin installed
-* For Appium setup and Mac, please refer
+* Appium setup for Mac / Windows
 
 ## Project Structure
 * Configuration package - Hooks, DeviceHelper, LocalDriverManager, ServiceManager
