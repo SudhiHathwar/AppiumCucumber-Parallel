@@ -57,20 +57,24 @@ public class Listener implements ITestListener {
         Object testClass = iTestResult.getInstance();
         AppiumDriver webDriver = LocalDriverManager.getDriver();
 
-        File scrFile = ((TakesScreenshot) LocalDriverManager.getDriver())
-                .getScreenshotAs(OutputType.FILE);
-
-        String failedScreen =
-                System.getProperty("user.dir") + "/target/screenshot/" + "/"
-                        + currentDateAndTime() + "_" + "_failed" + ".png";
-
         try {
+
+            File scrFile = ((TakesScreenshot) webDriver)
+                    .getScreenshotAs(OutputType.FILE);
+
+            String failedScreen =
+                    System.getProperty("user.dir") + "/target/screenshot/" + "/"
+                            + testClass.toString() + "_"
+                            + currentDateAndTime() + "_" + "_failed" + ".png";
+
+
             FileUtils.copyFile(scrFile, new File(failedScreen));
 
             ExtentTestManager.getTest().log(Status.FAIL, "Test Failed");
-            ExtentTestManager.getTest().log(Status.INFO, "Failure Reson--->>> " + iTestResult.getThrowable().getCause().getMessage());
+            ExtentTestManager.getTest().log(Status.INFO, "Failure Reason--->>> " + iTestResult.getThrowable().getCause().getMessage());
             ExtentTestManager.getTest().log(Status.INFO, "Exception Details--->>>" + ExceptionUtil.getStackTrace(iTestResult.getThrowable()));
             ExtentTestManager.getTest().addScreenCaptureFromPath(failedScreen, ExtentTestManager.getTest().toString());
+
         } catch (IOException e) {
             e.printStackTrace();
         }

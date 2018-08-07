@@ -59,12 +59,12 @@ public class Hooks {
     public void launchDriver ( String platform, String platformVersion, String deviceName, String port, String udid ) {
 
         if (platform.toLowerCase().equals("android")) {
-            LocalDriverManager.setWebDriver(getAndroidDriver(ServiceManager.getService(), platformVersion, deviceName, port, udid));
+            LocalDriverManager.setWebDriver(getAndroidDriver(platformVersion, deviceName, port, udid));
 
             DeviceHelper.setDeviceName(deviceName);
 
         } else {
-            LocalDriverManager.setWebDriver(getIOSDriver(ServiceManager.getService(), platformVersion, deviceName, port, udid));
+            LocalDriverManager.setWebDriver(getIOSDriver( platformVersion, deviceName, port, udid));
 
             DeviceHelper.setDeviceName(deviceName);
         }
@@ -77,7 +77,7 @@ public class Hooks {
         }
     }
 
-    private AppiumDriver getIOSDriver ( AppiumDriverLocalService service, String platformVersion, String deviceName, String wdaLocalPort, String udid ) {
+    private AppiumDriver getIOSDriver ( String platformVersion, String deviceName, String wdaLocalPort, String udid ) {
 
         if (url != null) {
 
@@ -89,18 +89,18 @@ public class Hooks {
             capabilities.setCapability(MobileCapabilityType.PLATFORM_NAME, Platform.IOS);
             capabilities.setCapability(MobileCapabilityType.PLATFORM_VERSION, platformVersion);
             capabilities.setCapability(MobileCapabilityType.DEVICE_NAME, deviceName);
-            capabilities.setCapability("wdaLocalPort", Integer.valueOf(wdaLocalPort));
             capabilities.setCapability(MobileCapabilityType.APP, app);
             capabilities.setCapability(MobileCapabilityType.ORIENTATION, "PORTRAIT");
             capabilities.setCapability(MobileCapabilityType.NO_RESET, false);
             capabilities.setCapability(IOSMobileCapabilityType.PREVENT_WDAATTACHMENTS, false);
-            capabilities.setCapability("udid", udid);
             capabilities.setCapability(IOSMobileCapabilityType.WDA_CONNECTION_TIMEOUT, 80000);
             capabilities.setCapability(IOSMobileCapabilityType.WDA_LAUNCH_TIMEOUT, 80000);
             capabilities.setCapability(IOSMobileCapabilityType.SHOULD_USE_SINGLETON_TESTMANAGER, false);
             capabilities.setCapability(IOSMobileCapabilityType.SIMPLE_ISVISIBLE_CHECK, true);
             capabilities.setCapability(IOSMobileCapabilityType.MAX_TYPING_FREQUENCY, 10);
+            capabilities.setCapability("wdaLocalPort", Integer.valueOf(wdaLocalPort));
             capabilities.setCapability("clearSystemFiles", true);
+            capabilities.setCapability("udid", udid);
             return new IOSDriver<IOSElement>(url, capabilities);
         } else {
             System.out.println("You have to launch appium server before launching driver");
@@ -108,7 +108,7 @@ public class Hooks {
         }
     }
 
-    private AppiumDriver getAndroidDriver ( AppiumDriverLocalService service, String platformVersion, String deviceName, String portNumber, String udid ) {
+    private AppiumDriver getAndroidDriver ( String platformVersion, String deviceName, String portNumber, String udid ) {
 
         if (url != null) {
 
@@ -116,19 +116,19 @@ public class Hooks {
             File app = new File(appDir, "apk file name");
 
             DesiredCapabilities capabilities = new DesiredCapabilities();
-            capabilities.setCapability(MobileCapabilityType.AUTOMATION_NAME, "appium");
+            capabilities.setCapability(MobileCapabilityType.AUTOMATION_NAME, AutomationName.APPIUM);
             capabilities.setCapability(MobileCapabilityType.PLATFORM_NAME, Platform.ANDROID);
             capabilities.setCapability(MobileCapabilityType.PLATFORM_VERSION, platformVersion);
             capabilities.setCapability(MobileCapabilityType.DEVICE_NAME, deviceName);
+            capabilities.setCapability(AndroidMobileCapabilityType.SYSTEM_PORT, Integer.valueOf(portNumber));
+            capabilities.setCapability(MobileCapabilityType.APP, app.getAbsolutePath());
+            capabilities.setCapability(MobileCapabilityType.ORIENTATION, "PORTRAIT");
+            capabilities.setCapability(MobileCapabilityType.NO_RESET, false);
 
             if (udid != "") {
                 capabilities.setCapability("udid", udid);
             }
 
-            capabilities.setCapability(AndroidMobileCapabilityType.SYSTEM_PORT, Integer.valueOf(portNumber));
-            capabilities.setCapability(MobileCapabilityType.APP, app.getAbsolutePath());
-            capabilities.setCapability(MobileCapabilityType.ORIENTATION, "PORTRAIT");
-            capabilities.setCapability(MobileCapabilityType.NO_RESET, false);
             return new AndroidDriver<AndroidElement>(url, capabilities);
 
         } else {
