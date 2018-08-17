@@ -1,5 +1,6 @@
 package com.test.Utils;
 
+import com.test.Configuration.PropertyReader;
 import org.testng.IRetryAnalyzer;
 import org.testng.ITestResult;
 
@@ -7,8 +8,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Retry implements IRetryAnalyzer {
-    public int maxRetryCount = 0;
     public int retryCountForTest = 0;
+    PropertyReader maxCountReader = new PropertyReader();
+    int maxRetryCount = Integer.parseInt(maxCountReader.readProperty("MAX_RETRY_COUNT"));
     private Map<String, Integer> retryCounts = new HashMap<String, Integer>();
 
     @Override

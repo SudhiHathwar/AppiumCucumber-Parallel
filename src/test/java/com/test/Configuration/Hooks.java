@@ -21,14 +21,17 @@ import java.net.URL;
 public class Hooks {
 
     static URL url;
+    private PropertyReader pathReader;
 
     @BeforeSuite
     public void startServer () {
 
         AppiumDriverLocalService service;
 
+        String appiumPath = pathReader.readProperty("APPIUM_PATH");
+
         AppiumServiceBuilder appiumServiceBuilder = new AppiumServiceBuilder()
-                .withAppiumJS(new File("/usr/local/lib/node_modules/appium/build/lib/main.js"))
+                .withAppiumJS(new File(appiumPath))
                 .withIPAddress("127.0.0.1")
                 .usingAnyFreePort();
         service = appiumServiceBuilder.build();
@@ -82,7 +85,7 @@ public class Hooks {
         if (url != null) {
 
             File appDir = new File("src/test/resources/");
-            File app = new File(appDir, "ipa file name");
+            File app = new File(appDir, "*.ipa");
 
             DesiredCapabilities capabilities = new DesiredCapabilities();
             capabilities.setCapability(MobileCapabilityType.AUTOMATION_NAME, AutomationName.IOS_XCUI_TEST);
@@ -113,7 +116,7 @@ public class Hooks {
         if (url != null) {
 
             File appDir = new File("src/test/resources/");
-            File app = new File(appDir, "apk file name");
+            File app = new File(appDir, "*.apk");
 
             DesiredCapabilities capabilities = new DesiredCapabilities();
             capabilities.setCapability(MobileCapabilityType.AUTOMATION_NAME, AutomationName.APPIUM);
