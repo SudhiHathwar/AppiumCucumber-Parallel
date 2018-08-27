@@ -5,44 +5,23 @@
         <listener class-name="com.test.Utils.Listener"/>
         <listener class-name="com.test.Utils.AnnotationTransformer"/>
     </listeners>
-    <test name="CucumberAppiumTest-Android-1">
+    <test name="CucumberAppiumTest-Android">
         <parameter name="platform" value="Android"></parameter>
         <parameter name="platformVersion" value="8.1.0"></parameter>
-        <parameter name="deviceName" value="Emulator-5554"></parameter>
+        <parameter name="deviceName" value="device"></parameter>
         <parameter name="port" value="2315"></parameter>
-        <parameter name="udid" value=""></parameter>
+        <parameter name="udid" value="">Emulator-5554</parameter>
         <!--<parameter name="udid" value="32085b6d8fdb71ff"></parameter>-->
         <classes>
             <class name="com.test.Runner.RunCukesTest"/>
         </classes>
     </test> <!-- CucumberAppiumTest -->
-    <!--<test name="CucumberAppiumTest-Android-2">-->
-        <!--<parameter name="platform" value="Android"></parameter>-->
-        <!--<parameter name="platformVersion" value="6.0.1"></parameter>-->
-        <!--<parameter name="deviceName" value="HTC"></parameter>-->
-        <!--<parameter name="port" value="2315"></parameter>-->
-        <!--<parameter name="udid" value="FA66VBN01980"></parameter>-->
-        <!--<classes>-->
-            <!--<class name="com.test.Runner.RunCukesTest"/>-->
-        <!--</classes>-->
-    <!--</test> &lt;!&ndash; CucumberAppiumTest &ndash;&gt;-->
-    <!--<test name="CucumberAppiumTest-IOS-1">-->
+    <!--<test name="CucumberAppiumTest-IOS">-->
         <!--<parameter name="platform" value="iOS"></parameter>-->
         <!--<parameter name="platformVersion" value="11.4"></parameter>-->
         <!--<parameter name="deviceName" value="iPhone 7"></parameter>-->
         <!--<parameter name="port" value="2317"></parameter>-->
         <!--<parameter name="udid" value="14D1F964-F72F-4AF3-84BD-08CD706D348B"></parameter>-->
-        <!--<classes>-->
-            <!--<class name="com.test.Runner.RunCukesTest"/>-->
-        <!--</classes>-->
-    <!--</test> &lt;!&ndash; CucumberAppiumTest &ndash;&gt;-->
-
-    <!--<test name="CucumberAppiumTest-IOS-2">-->
-        <!--<parameter name="platform" value="iOS"></parameter>-->
-        <!--<parameter name="platformVersion" value="11.4"></parameter>-->
-        <!--<parameter name="deviceName" value="iPhone 7 Plus"></parameter>-->
-        <!--<parameter name="port" value="2318"></parameter>-->
-        <!--<parameter name="udid" value="F70C457C-7E38-4840-ADB8-7FEAAA5CEC3A"></parameter>-->
         <!--<classes>-->
             <!--<class name="com.test.Runner.RunCukesTest"/>-->
         <!--</classes>-->

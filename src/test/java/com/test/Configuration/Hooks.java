@@ -21,7 +21,7 @@ import java.net.URL;
 public class Hooks {
 
     static URL url;
-    private PropertyReader pathReader;
+    private PropertyReader pathReader = new PropertyReader();
 
     @BeforeSuite
     public void startServer () {
@@ -67,7 +67,7 @@ public class Hooks {
             DeviceHelper.setDeviceName(deviceName);
 
         } else {
-            LocalDriverManager.setWebDriver(getIOSDriver( platformVersion, deviceName, port, udid));
+            LocalDriverManager.setWebDriver(getIOSDriver(platformVersion, deviceName, port, udid));
 
             DeviceHelper.setDeviceName(deviceName);
         }
@@ -119,7 +119,7 @@ public class Hooks {
             File app = new File(appDir, "*.apk");
 
             DesiredCapabilities capabilities = new DesiredCapabilities();
-            capabilities.setCapability(MobileCapabilityType.AUTOMATION_NAME, AutomationName.APPIUM);
+            capabilities.setCapability(MobileCapabilityType.AUTOMATION_NAME, AutomationName.ANDROID_UIAUTOMATOR2);
             capabilities.setCapability(MobileCapabilityType.PLATFORM_NAME, Platform.ANDROID);
             capabilities.setCapability(MobileCapabilityType.PLATFORM_VERSION, platformVersion);
             capabilities.setCapability(MobileCapabilityType.DEVICE_NAME, deviceName);

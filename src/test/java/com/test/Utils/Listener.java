@@ -4,10 +4,11 @@ import com.aventstack.extentreports.Status;
 import com.aventstack.extentreports.utils.ExceptionUtil;
 import com.test.Configuration.DeviceHelper;
 import com.test.Configuration.LocalDriverManager;
-import io.appium.java_client.AppiumDriver;
+import cucumber.api.testng.CucumberFeatureWrapperImpl;
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
+import org.openqa.selenium.WebDriver;
 import org.testng.IRetryAnalyzer;
 import org.testng.ITestContext;
 import org.testng.ITestListener;
@@ -20,13 +21,18 @@ import java.time.format.DateTimeFormatter;
 
 public class Listener implements ITestListener {
 
-    private static String getTestMethodName ( ITestResult iTestResult ) {
-        return iTestResult.getMethod().getConstructorOrMethod().getName();
+    String deviceName;
+    String methodName;
+
+    private String getTestMethodName ( ITestResult iTestResult ) {
+        return methodName;
     }
 
     @Override
     public void onStart ( ITestContext iTestContext ) {
         iTestContext.setAttribute("WebDriver", LocalDriverManager.getDriver());
+        deviceName = iTestContext.getCurrentXmlTest().getLocalParameters().get("deviceName");
+
     }
 
     @Override
@@ -37,13 +43,21 @@ public class Listener implements ITestListener {
     @Override
     public void onTestStart ( ITestResult iTestResult ) {
 
-        ExtentTestManager.createTest(iTestResult.getMethod().getMethodName().toUpperCase() + "-" + DeviceHelper.getDeviceName().toUpperCase(),
-                "DeviceDetails:" + "<br></br>"
-                        + "<b>DeviceName: <b>" + DeviceHelper.getDeviceName() + "<br></br>"
-                        + "<b>DeviceUdid: <b>" + LocalDriverManager.getDriver().getPlatformName() + "<br></br>"
-                        + "<b>DeviceModel: <b>" + LocalDriverManager.getDriver().getSessionDetails().get("deviceModel"));
+        methodName = iTestResult.getMethod().getMethodName();
+        String description = "Running tests on:" + deviceName;
+        Object[] obj = iTestResult.getParameters();
 
-        ExtentTestManager.getTest();
+        int counter = 0;
+        while (obj.length != counter) {
+            methodName = ((CucumberFeatureWrapperImpl) obj[0]).getCucumberFeature().getPath().replace(".feature", "");
+            description = ((CucumberFeatureWrapperImpl) obj[0]).getCucumberFeature().getFeatureElements().get(0).getVisualName()
+                    + "DeviceDetails:" + "<br></br>"
+                    + "<b>DeviceName: <b>" + DeviceHelper.getDeviceName() + "<br></br>"
+                    + "<b>DeviceUdid: <b>" + LocalDriverManager.getDriver().getPlatformName() + "<br></br>"
+                    + "<b>DeviceModel: <b>" + LocalDriverManager.getDriver().getSessionDetails().get("deviceModel");
+            counter++;
+        }
+        ExtentTestManager.createTest(methodName + " - " + deviceName, description);
     }
 
     @Override
@@ -55,28 +69,33 @@ public class Listener implements ITestListener {
     public void onTestFailure ( ITestResult iTestResult ) {
 
         Object testClass = iTestResult.getInstance();
-        AppiumDriver webDriver = LocalDriverManager.getDriver();
+        WebDriver webDriver = LocalDriverManager.getDriver();
 
-        try {
-
+        if (webDriver != null) {
             File scrFile = ((TakesScreenshot) webDriver)
                     .getScreenshotAs(OutputType.FILE);
 
             String failedScreen =
                     System.getProperty("user.dir") + "/target/screenshot/" + "/"
-                            + testClass.toString() + "_"
-                            + currentDateAndTime() + "_" + "_failed" + ".png";
+                            + testClass.toString() + currentDateAndTime() + "_" + "_failed" + ".png";
 
+            try {
+                FileUtils.copyFile(scrFile, new File(failedScreen));
 
-            FileUtils.copyFile(scrFile, new File(failedScreen));
+                ExtentTestManager.getTest().log(Status.FAIL, "Test Failed" + "<br></br>");
+                ExtentTestManager.getTest().log(Status.INFO, "<b>Failure Reason--->>> </b>  <br></br>" + iTestResult.getThrowable().getMessage());
+                ExtentTestManager.getTest().log(Status.INFO, "<b>Exception Details--->>></b> + <br></br>" + "<pre>" + ExceptionUtil.getStackTrace(iTestResult.getThrowable()) + "</pre>");
+                ExtentTestManager.getTest().addScreenCaptureFromPath(failedScreen, ExtentTestManager.getTest().toString());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
 
+            webDriver.quit();
+
+        } else {
             ExtentTestManager.getTest().log(Status.FAIL, "Test Failed");
-            ExtentTestManager.getTest().log(Status.INFO, "Failure Reason--->>> " + iTestResult.getThrowable().getCause().getMessage());
-            ExtentTestManager.getTest().log(Status.INFO, "Exception Details--->>>" + ExceptionUtil.getStackTrace(iTestResult.getThrowable()));
-            ExtentTestManager.getTest().addScreenCaptureFromPath(failedScreen, ExtentTestManager.getTest().toString());
-
-        } catch (IOException e) {
-            e.printStackTrace();
+            ExtentTestManager.getTest().log(Status.INFO, "<b>Failure Reason--->>> </b>  <br></br>" + iTestResult.getThrowable().getMessage());
+            ExtentTestManager.getTest().log(Status.INFO, "<b>Exception Details--->>></b> + <br></br>" + "<pre>" + ExceptionUtil.getStackTrace(iTestResult.getThrowable()) + "</pre>");
         }
     }
 
